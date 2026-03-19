@@ -1,0 +1,18 @@
+package org.example.events_service.repository;
+
+import org.example.events_service.entity.Application;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+@Repository
+public interface ApplicationRepository extends JpaRepository<Application, UUID> {
+
+    boolean existsByEventIdAndArtistUserId(UUID eventId, UUID artistUserId);
+
+    Page<Application> findByEventId(UUID eventId, Pageable pageable);
+
+
+}

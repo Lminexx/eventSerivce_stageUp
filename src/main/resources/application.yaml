@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: Profiles service
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 55MB
+  datasource:
+    url: jdbc:postgresql://localhost:5434/events_db
+    username:
+    password:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+      show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  security:
+    enabled: false
+  jwt:
+    secret: mySuperSecretKeyProtivHackerovDon'tHackplzMyDiplomProjectPLLLLLLZZZZZ1337228
+    lifetime: 86400000
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+    default-schema: public
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+server:
+  address: 0.0.0.0
+  port: 8083
+

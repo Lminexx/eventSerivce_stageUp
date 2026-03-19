@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3-create-performances-table
+      author: author
+      changes:
+        - createTable:
+            tableName: performances
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: event_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_performances_event_id
+                    references: events(id)
+                    deleteCascade: true
+              - column:
+                  name: artist_user_id
+                  type: uuid
+                  remarks: "Логическая связь с User Service"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: application_id
+                  type: uuid
+                  remarks: "Может быть NULL при ручном добавлении организатором"
+                  constraints:
+                    nullable: true
+                    unique: true
+                    uniqueConstraintName: uq_performances_application_id
+                    foreignKeyName: fk_performances_application_id
+                    references: applications(id)
+              - column:
+                  name: performance_date
+                  type: date
+              - column:
+                  name: start_time
+                  type: time
+              - column:
+                  name: end_time
+                  type: time
+              - column:
+                  name: actual_fee_paid
+                  type: decimal(10,2)
+              - column:
+                  name: status
+                  type: varchar(50)
+                  defaultValue: 'PLANNED'
+              - column:
+                  name: feedback_requested
+                  type: boolean
+                  defaultValueBoolean: false
