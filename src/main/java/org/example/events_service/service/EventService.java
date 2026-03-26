@@ -3,6 +3,8 @@ package org.example.events_service.service;
 import lombok.extern.slf4j.Slf4j;
 import org.example.events_service.DTO.EventDTO;
 import org.example.events_service.entity.Event;
+import org.example.events_service.exception.AccessDeniedException;
+import org.example.events_service.exception.EventNotFoundException;
 import org.example.events_service.mapping.EventMapper;
 import org.example.events_service.repository.ApplicationRepository;
 import org.example.events_service.repository.EventRepository;
@@ -10,6 +12,7 @@ import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -87,10 +90,10 @@ public class EventService {
                                 OffsetDateTime creationDate){
 
         log.info("Update event {}", eventId);
-        Event event = eventRepository.findById(eventId).orElseThrow(()-> new RuntimeException("Event with id " + eventId + " not found"));
+        Event event = eventRepository.findById(eventId).orElseThrow(()-> new EventNotFoundException(eventId));
 
         if (!event.getOrganizerUserId().equals(organizerUserId)) {
-            throw new RuntimeException("Вы не можете редактировать чужое мероприятие!");
+            throw new AccessDeniedException();
         }
 
         event.setTitle(title);
@@ -109,6 +112,17 @@ public class EventService {
         event.setCreationDate(creationDate);
         eventRepository.save(event);
         return eventMapper.toEventDto(event);
+    }
+
+    @Transactional
+    public void deleteEvent(UUID eventId, UUID organizerUserId) {
+        log.info("Delete event {}", eventId);
+        Event event = eventRepository.findById(eventId).orElseThrow(()-> new EventNotFoundException(eventId));
+
+        if(!event.getOrganizerUserId().equals(organizerUserId)) {
+            throw new AccessDeniedException();
+        }
+        eventRepository.delete(event);
     }
 
 

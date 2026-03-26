@@ -69,6 +69,13 @@ public class EventController {
         ));
     }
 
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable UUID eventId,
+                                            @RequestHeader("X-User-Id") UUID organizerUserId) {
+        eventService.deleteEvent(eventId, organizerUserId);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @GetMapping
     public ResponseEntity<Page<EventDTO>> getEvents(
